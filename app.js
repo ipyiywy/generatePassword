@@ -1,8 +1,8 @@
-// app.js
-// include packages and define server related variables
+// Include packages and define server related variables
 const express = require('express')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
+const generatePassword = require('./generate_password')
 const app = express()
 const port = 3000
 
@@ -10,16 +10,19 @@ const port = 3000
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 
-app.use(express.urlencoded({ extended: true }))
+// setting body-parser
 app.use(express.static('public'))
+
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // setting routes
 app.get('/', (req, res) => {
   res.render('index')
 })
-app.post('/', (req,res) => {
-console.log('req.body', req.body)
-res.render('index')
+
+app.post('/', (req, res) => {
+  const password = generatePassword(req.body)
+  res.render('index', { password: password })
 })
 
 // starts the express server and listening for connections.
